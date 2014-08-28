@@ -1,243 +1,225 @@
 <html>
+
 <TITLE>Species concentration profiles</TITLE>
 
 <BODY bgcolor="FFFFFF">
-<CENTER><IMG SRC="http://www.emc.ncep.noaa.gov/mmb/www_images/gradiated_line.gif"><P></CENTER>
-<CENTER><h1>Profiles of gas and aerosol species at AIRNOW stations</h1></CENTER>
 
+  <CENTER>
+   <IMG SRC="http://www.emc.ncep.noaa.gov/mmb/www_images/gradiated_line.gif">
+   </CENTER>
 
-<!--change the drop down menu into Javascript and then get the user input as variables-->
+   <h1>
+     <CENTER>
+        Profiles of gas and aerosol species at AIRNOW stations
+    </CENTER>
+  </h1>
 
+  <!--The drop down menu is now written in Javascript and gets the user input as variables.-->
 
-<Center>
+  <Center>
 
+    Please input the date and parameter in this format: yyyymmddOzone or yyyymmddPM2.5
 
-Please input the date and parameter in this format: yyyymmddOzone or yyyymmddPM2.5
-<form action="" name="myform">
-  <input type="text" name="name">
-  <input type="submit"  value="Submit"> </input>
-  <div id="theName"></div>
-</form>
-<script type="text/javascript">
+    <form action="" name="myform">
+      <input type="text" name="name">
+      <input type="submit" value="Submit"></input>
+      <div id="theName"></div>
+    </form>
 
+    <script type="text/javascript">
 
-Date.prototype.yyyymmdd = function() {
-   var yyyy = this.getFullYear().toString();
-   var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
-   var dd  = this.getDate().toString();
-   return yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
-  };
+      // TODO: Improve Form by making inputs based on year, month, day, and pollutant
+      Date.prototype.yyyymmdd = function() {
+        var yyyy = this.getFullYear().toString();
+        var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
+        var dd  = this.getDate().toString();
+        return yyyy + (mm[1]?mm:"0" + mm[0]) + (dd[1]?dd:"0" + dd[0]); // padding
+      };
 
-d = new Date();
-var dd = d.yyyymmdd();
-datenow = dd.toString();
-var a;
-var b;
-var dater = datenow;
-var datee;
-var date = dater.concat("/", dater, ".5X.", "O3.ts");
-  (function() {
-    var form = document.getElementsByName('myform')[0];
-    if (localStorage['name'] !== undefined) {
-      var displayArea = document.getElementById('theName');
-      //displayArea.textContent = localStorage['name'];
-      //document.write(localStorage['name']);
-      var a = localStorage['name']
-      //a = document.getElementById("theName");
-      //document.write(a);
-      //b = a.value;
-      dater = a.substring(0,8);
-      datee = a.substring(8,13);
-      //document.write(dater,datee);
-      if (datee == "Ozone") {
-      date = dater.concat("/", dater, ".5X.", "O3.ts");
-      }
-      else if (datee == "PM2.5") {
-      date = dater.concat("/", dater, ".5X.", "PM2P5.ts");
-      }
-      //document.write(date);
-     //document.write(datee, "  on  ", dater);
-     
-    }
-    form.addEventListener('submit', function() {
-      var nameField = document.getElementsByName('name')[0];
-      localStorage['name'] = nameField.value;
-      
-      }, false);
+      var d = new Date();
+      var today = d.yyyymmdd().toString();
+      var input;
+      var time = today;
+      var pollutant;
+      var date = time.concat("/", time, ".5X.", "O3.ts");
+      (function() {
+        var form = document.getElementsByName('myform')[0];
+        
+        if (localStorage['name'] !== undefined) {
+          var displayArea = document.getElementById('theName');
+          input = localStorage['name']
+          time = input.substring(0,8);
+          pollutant = input.substring(8,13);
+
+          if (pollutant == "Ozone") {
+            date = time.concat("/", time, ".5X.", "O3.ts");
+          } else if (pollutant == "PM2.5") {
+            date = time.concat("/", time, ".5X.", "PM2P5.ts");
+          }    
+        }
+
+        form.addEventListener('submit', function() {
+          var nameField = document.getElementsByName('name')[0];
+          localStorage['name'] = nameField.value;
+        }, false);
+
       })();
 
+      localStorage['name'] = undefined;
 
-localStorage['name'] = undefined;
+    </script>
 
-</script>
+  <script>
 
-
-
-<script>
-if (dater != undefined && (datee == "Ozone" || datee == "PM2.5")) { 
-document.writeln(datee, "  on  ", dater);
-} else {document.writeln("Ozone on ", datenow);}
-</script>
-
-<table>
-<tr>
-<td>
-<center><h2> Timeseries for Different Stations </h2> </center> </br>
-</td>
-</tr>
-<tr>
-<td>
-<table>
-
-
-
-<Center>
-<head>
-  <title>Sample</title>
-  <script type="text/javascript" src="https://www.google.com/jsapi"> </script>
-  <script type="text/javascript">
-    var ge;
-    google.load("earth", "1");
-
-    function init() {
-      google.earth.createInstance('map3d', initCB, failureCB);
+    if (time != undefined && (pollutant == "Ozone" || pollutant == "PM2.5")) { 
+      document.writeln(pollutant, "  on  ", time);
+    } else {
+      document.writeln("Ozone on ", today);
     }
 
-    function initCB(instance) {
+  </script>
+
+  <table>
+    <tr>
+      <td>
+        <h2>
+          <center>Timeseries for Different Stations</center>
+        </h2>
+      </td>
+    </tr>
+  </table>
+
+  </br>
+
+  <Center>
+    <head>
+      <title>Air Quality Monitoring Stations</title>
+      <script type="text/javascript" src="https://www.google.com/jsapi"> </script>
+      <script type="text/javascript">
+        var ge;
+        google.load("earth", "1");
+
+        function init() {
+          google.earth.createInstance('map3d', initCB, failureCB);
+        }
+
+        function initCB(instance) {      
+          ge = instance;
+          ge.getWindow().setVisibility(true);
+          // Get the current view.
+          var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND);
+          // Set new latitude and longitude values.
+          lookAt.setLatitude(40.044438);
+          lookAt.setLongitude(-98.640747);
+          lookAt.setRange(5000000.0);
+
+          // Update the view in Google Earth.
+          // Note: View changes when you add placemarks
+          ge.getView().setAbstractView(lookAt);          
+
+          //Add 5 new sites to the map
+
+          //Icon
+          var icon = ge.createIcon('');
+          //icon.setHref('http://www.epa.gov/airnow/today/aqi0circle.png');
+          icon.setHref('http://cyding.github.io/Air_Quality_Site/Images/aqi0circle.png');
+          var style = ge.createStyle('');
+          style.getIconStyle().setIcon(icon);
+          style.getIconStyle().setScale(2.0);
+          var baseURL = "http://testbed.arl.noaa.gov/TCHAI/hkim/";
+
+          var placemark = ge.createPlacemark('');
+          placemark.setName( "<font size = 2> Fairhope, Alabama  <br>  <p align = left> FAIRHOPE HIGH SCHOOL, FAIRHOPE, ALABAMA  <br> Site ID: 010030010  <br> Latitude: 30.498001 <br> Longitude: -87.881412  <br> Time Zone: Central <br>  Land use: Commercial <br>  Local Setting: Suburban  </p> </font>" ); 
+          var site = baseURL + date + ".010030010.png";
+          var point = ge.createPoint('');
+          point.setLatitude(30.498001);
+          point.setLongitude(-87.881412);
+          placemark.setDescription(site);
+          placemark.setGeometry(point);
+          placemark.setStyleSelector(style);
+          ge.getFeatures().appendChild(placemark);
+
+
+          var placemark = ge.createPlacemark('');
+          placemark.setName( "<font size = 2> Hollister 2  <br>  <p align = left> 1979 Fairview Rd  <br> Site ID: 060690002  <br> Latitude: 36.844096 <br> Longitude: -121.362121  <br> Time Zone: Pacific <br>  Land use: Residential <br>  Local Setting: Rural  </p> </font>" );
+          var site = baseURL + date + ".060690002.png";
+          var point = ge.createPoint('');
+          point.setLatitude(36.844096 );
+          point.setLongitude(-121.362121);
+          placemark.setDescription(site);
+          placemark.setGeometry(point);
+          placemark.setStyleSelector(style);
+          ge.getFeatures().appendChild(placemark);
+
+          var placemark = ge.createPlacemark('');
+          placemark.setName( "<font size = 2> Name Unsure <br>  <p align = left> 2323 MOORPARK ROAD, THOUSAND OAKS, CA  <br> Site ID: 061110007  <br> Latitude: 34.210000 <br> Longitude: -118.869444  <br> Time Zone: Pacific <br>  Land use: Residential <br>  Local Setting: Suburban  </p> </font>" );
+          var site = baseURL + date + ".061110007.png";
+          var point = ge.createPoint('');
+          point.setLatitude(34.210000 );
+          point.setLongitude(-118.869444);
+          placemark.setDescription(site);
+          placemark.setGeometry(point);
+          placemark.setStyleSelector(style);
+          ge.getFeatures().appendChild(placemark);
+
+          var placemark = ge.createPlacemark('');
+          placemark.setName( "<font size = 2> PROPERTY OF KILLENS POND STATE PARK; <br> BEHIND FARM BUILDINGS <br> <p align = left> STATE ROAD 384, KILLENS POND RD  <br> Site ID: 100010002  <br> Latitude: 38.984749 <br> Longitude: -75.555185  <br> Time Zone: Eastern <br>  Land use: Agricultural <br>  Local Setting: Rural   </p> </font>" );
+          var site = baseURL + date + ".100010002.png";
+          var point = ge.createPoint('');
+          point.setLatitude(38.984749);
+          point.setLongitude(-75.555185);
+          placemark.setDescription(site);
+          placemark.setGeometry(point);
+          placemark.setStyleSelector(style);
+          ge.getFeatures().appendChild(placemark);
+
+          var placemark = ge.createPlacemark('');
+          placemark.setName( "<font size = 2> GT CRAIG <br> <p align = left> E. 14TH & ORANGE  <br> Site ID: 390350060  <br> Latitude: 41.492191 <br> Longitude: -81.678552  <br> Time Zone: Eastern <br>  Land use: Commercial <br>  Local Setting: Urban and Center City   </p> </font>" );
+          var site = baseURL + date + ".390350060.png";
+          var point = ge.createPoint('');
+          point.setLatitude(41.492191);
+          point.setLongitude(-81.678552);
+          placemark.setDescription(site);
+          placemark.setGeometry(point);
+          placemark.setStyleSelector(style);
+          ge.getFeatures().appendChild(placemark);
+
+          var placemark = ge.createPlacemark('');
+          var site = baseURL + date + ".090090027.png";
+          placemark.setName( "<font size = 2> 090090027 <br> <p align = left> 1JAMES STREET  <br> Site ID: 090090027  <br> Latitude: 41.301 <br> Longitude: -72.902  <br> Time Zone: Eastern <br>  Land use: Commercial <br>  Local Setting: Urban  <br> </font>"); 
+          placemark.setDescription(site);
+          //TODO: Write code to open link in a new popup window.
+          var point = ge.createPoint('');
+          point.setLatitude(41.301);
+          point.setLongitude(-72.902);
+          placemark.setGeometry(point);
+          placemark.setStyleSelector(style);
+          ge.getFeatures().appendChild(placemark);
+
+          ge.getNavigationControl().setVisibility(ge.VISIBILITY_SHOW);
+          ge.getOptions().setStatusBarVisibility(true);
+          ge.getOptions().setScaleLegendVisibility(true);
+          ge.getOptions().setOverviewMapVisibility(true);
+          ge.getOptions().setGridVisibility(true);
+          ge.getOptions().setAtmosphereVisibility(true);
+
+        }
+
+        function failureCB(errorCode) {}
+
+        google.setOnLoadCallback(init);
+
+      </script>
+
+    </head>
+    
+    <body>
+      <div id="map3d" style="height: 500px; width: 700px;"></div>
+    </body>
+    
+    <!--<A HREF="http://testbed.arl.noaa.gov/AQ_forecast.php" target="_parent"> -->
+    <A HREF="http://www.arl.noaa.gov/" target="_blank"><H2>GO TO: Air Quality Group Home Page</H2></A>
       
-ge = instance;
-      ge.getWindow().setVisibility(true);
-// Get the current view.
-      var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND);
-// Set new latitude and longitude values.
-      lookAt.setLatitude(40.044438);
-      lookAt.setLongitude(-98.640747);
-      lookAt.setRange(5000000.0);
-
-      // Update the view in Google Earth.
-      ge.getView().setAbstractView(lookAt);
-//Note: View changes when you add placemarks
-
-
-
-//Add 5 new sites to the map
-
-
-
-//Icon
-var icon = ge.createIcon('');
-//icon.setHref('http://www.epa.gov/airnow/today/aqi0circle.png');
-icon.setHref('http://cyding.github.io/Air_Quality_Site/Images/aqi0circle.png');
-var style = ge.createStyle('');
-style.getIconStyle().setIcon(icon);
-style.getIconStyle().setScale(2.0);
-
-         var placemark = ge.createPlacemark('');
-         placemark.setName( "<font size = 2> Fairhope, Alabama  <br>  <p align = left> FAIRHOPE HIGH SCHOOL, FAIRHOPE, ALABAMA  <br> Site ID: 010030010  <br> Latitude: 30.498001 <br> Longitude: -87.881412  <br> Time Zone: Central <br>  Land use: Commercial <br>  Local Setting: Suburban  </p> </font>" ); 
-         var x = "";
-         var site = x.concat("http://testbed.arl.noaa.gov/TCHAI/hkim/", date, ".010030010.png");
-         var point = ge.createPoint('');
-         point.setLatitude(30.498001);
-         point.setLongitude(-87.881412);
-         placemark.setDescription(site);
-         placemark.setGeometry(point);
-         placemark.setStyleSelector(style);
-         ge.getFeatures().appendChild(placemark);
-
-
-         var placemark = ge.createPlacemark('');
-         placemark.setName( "<font size = 2> Hollister 2  <br>  <p align = left> 1979 Fairview Rd  <br> Site ID: 060690002  <br> Latitude: 36.844096 <br> Longitude: -121.362121  <br> Time Zone: Pacific <br>  Land use: Residential <br>  Local Setting: Rural  </p> </font>" );
-         var site = x.concat("http://testbed.arl.noaa.gov/TCHAI/hkim/", date, ".060690002.png");
-         var point = ge.createPoint('');
-         point.setLatitude(36.844096 );
-         point.setLongitude(-121.362121);
-         placemark.setDescription(site);
-         placemark.setGeometry(point);
-         placemark.setStyleSelector(style);
-         ge.getFeatures().appendChild(placemark);
-
-	 var placemark = ge.createPlacemark('');
-         placemark.setName( "<font size = 2> Name Unsure <br>  <p align = left> 2323 MOORPARK ROAD, THOUSAND OAKS, CA  <br> Site ID: 061110007  <br> Latitude: 34.210000 <br> Longitude: -118.869444  <br> Time Zone: Pacific <br>  Land use: Residential <br>  Local Setting: Suburban  </p> </font>" );
-         var site = x.concat("http://testbed.arl.noaa.gov/TCHAI/hkim/", date, ".061110007.png");
-         var point = ge.createPoint('');
-         point.setLatitude(34.210000 );
-         point.setLongitude(-118.869444);
-         placemark.setDescription(site);
-         placemark.setGeometry(point);
-         placemark.setStyleSelector(style);
-         ge.getFeatures().appendChild(placemark);
-
-	 var placemark = ge.createPlacemark('');
-         placemark.setName( "<font size = 2> PROPERTY OF KILLENS POND STATE PARK; <br> BEHIND FARM BUILDINGS <br> <p align = left> STATE ROAD 384, KILLENS POND RD  <br> Site ID: 100010002  <br> Latitude: 38.984749 <br> Longitude: -75.555185  <br> Time Zone: Eastern <br>  Land use: Agricultural <br>  Local Setting: Rural   </p> </font>" );
-         var site = x.concat("http://testbed.arl.noaa.gov/TCHAI/hkim/", date, ".100010002.png");
-         var point = ge.createPoint('');
-         point.setLatitude(38.984749);
-         point.setLongitude(-75.555185);
-         placemark.setDescription(site);
-         placemark.setGeometry(point);
-         placemark.setStyleSelector(style);
-         ge.getFeatures().appendChild(placemark);
-
-	 var placemark = ge.createPlacemark('');
-         placemark.setName( "<font size = 2> GT CRAIG <br> <p align = left> E. 14TH & ORANGE  <br> Site ID: 390350060  <br> Latitude: 41.492191 <br> Longitude: -81.678552  <br> Time Zone: Eastern <br>  Land use: Commercial <br>  Local Setting: Urban and Center City   </p> </font>" );
-         var site = x.concat("http://testbed.arl.noaa.gov/TCHAI/hkim/", date, ".390350060.png");
-         var point = ge.createPoint('');
-         point.setLatitude(41.492191);
-         point.setLongitude(-81.678552);
-         placemark.setDescription(site);
-         placemark.setGeometry(point);
-         placemark.setStyleSelector(style);
-         ge.getFeatures().appendChild(placemark);
-         
-         
-	 var placemark = ge.createPlacemark('');
-         var x = "";
-         //document.write(date);
-	 //var site = x.concat("http://testbed.arl.noaa.gov/TCHAI/hkim/", date, "/", date, ".5X.O3.ts.090090027.png");
-	 var site = x.concat("http://testbed.arl.noaa.gov/TCHAI/hkim/", date, ".090090027.png");
-         //document.write(site);
-	 placemark.setName( "<font size = 2> 090090027 <br> <p align = left> 1JAMES STREET  <br> Site ID: 090090027  <br> Latitude: 41.301 <br> Longitude: -72.902  <br> Time Zone: Eastern <br>  Land use: Commercial <br>  Local Setting: Urban  <br> </font>"); //20130625/20130625
-         //var site2 = x.concat("http://testbed.arl.noaa.gov/TCHAI/hkim/", date, "/", date, ".5X.PM2P5.ts.090090027.png");
-	 //var y = site.concat("    ", site2);
-	 placemark.setDescription(site);
-         //May want to write code to open link in a new popup window
-	 var point = ge.createPoint('');
-         point.setLatitude(41.301);
-         point.setLongitude(-72.902);
-         placemark.setGeometry(point);
-         placemark.setStyleSelector(style);
-         //var sss = URL(site);
-         ge.getFeatures().appendChild(placemark);
-         
-
-ge.getNavigationControl().setVisibility(ge.VISIBILITY_SHOW);
-ge.getOptions().setStatusBarVisibility(true);
-ge.getOptions().setScaleLegendVisibility(true);
-ge.getOptions().setOverviewMapVisibility(true);
-ge.getOptions().setGridVisibility(true);
-ge.getOptions().setAtmosphereVisibility(true);
-
-
-
-      
-    }
-
-    function failureCB(errorCode) {
-    }
-
-    google.setOnLoadCallback(init);
-  //</script>
-
-</head>
-<body>
-  <div id="map3d" style="height: 500px; width: 700px;"></div>
-</body>
-<!--<A HREF="http://testbed.arl.noaa.gov/AQ_forecast.php" target="_parent"> -->
-<A HREF="http://www.arl.noaa.gov/" target="_parent"> 
-<H2>GO TO: Air Quality Group Home Page</H2></A>
-</Center>
-
-</script>
-
+  </Center>
 
 </html>
